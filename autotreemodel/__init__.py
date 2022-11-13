@@ -2,7 +2,6 @@
 
 __author__ = """RyanZheng"""
 __email__ = 'zhengruiping000@163.com'
-__version__ = '0.1.0'
 
 from .auto_build_tree_model import AutoBuildTreeModel
 from .feature_selection_2_treemodel import ShapSelectFeature, corr_select_feature, psi
