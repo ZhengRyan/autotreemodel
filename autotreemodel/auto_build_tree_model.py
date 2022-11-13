@@ -58,7 +58,8 @@ class AutoBuildTreeModel():
         self.target = target
         self.key = key
         self.no_feature_names = no_feature_names
-        self.ml_res_save_path = ml_res_save_path + '/' + time.strftime('%Y%m%d%H%M%S_%s', time.localtime())
+        #self.ml_res_save_path = ml_res_save_path + '/' + time.strftime('%Y%m%d%H%M%S_%s', time.localtime())
+        self.ml_res_save_path = ml_res_save_path + time.strftime('%Y%m%d%H%M%S_%s', time.localtime())
         self.to_score_a_b = to_score_a_b
         self.min_child_samples = max(round(len(datasets[datasets['type'] == 'train']) * 0.02),
                                      50)  # 一个叶子上数据的最小数量. 可以用来处理过拟合
