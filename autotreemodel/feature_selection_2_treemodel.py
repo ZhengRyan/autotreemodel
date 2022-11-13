@@ -90,9 +90,9 @@ def corr_select_feature(frame, by='auc', threshold=0.95, return_frame=False):
 
     # df = frame.copy()
 
-    by.index = by.index.astype(type(frame.columns.to_list()[0]))
-    df_corr = frame[by.index.to_list()].fillna(-999).corr().abs()  # 填充
-    # df_corr = frame[by.index.to_list()].corr().abs()
+    by.index = by.index.astype(type(list(frame.columns)[0]))
+    df_corr = frame[list(by.index)].fillna(-999).corr().abs()  # 填充
+    # df_corr = frame[list(by.index)].corr().abs()
 
     ix, cn = np.where(np.triu(df_corr.values, 1) > threshold)
 
@@ -104,12 +104,12 @@ def corr_select_feature(frame, by='auc', threshold=0.95, return_frame=False):
 
             if i not in del_all:
                 # 找出与当前特征的相关性大于域值的特征
-                del_tmp = df_corr[i][(df_corr[i] > threshold) & (df_corr[i] != 1)].index.to_list()
+                del_tmp = list(df_corr[i][(df_corr[i] > threshold) & (df_corr[i] != 1)].index)
 
                 # 比较当前特征与需要删除的特征的特征重要性
                 if del_tmp:
                     by_tmp = by.loc[del_tmp]
-                    del_l = by_tmp[by_tmp <= by.loc[i]].index.to_list()
+                    del_l = list(by_tmp[by_tmp <= by.loc[i]].index)
                     del_all.extend(del_l)
 
     del_f = list(set(del_all))
