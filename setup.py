@@ -2,6 +2,7 @@
 
 """The setup script."""
 
+import re
 from setuptools import setup, find_packages
 
 NAME = 'autotreemodel'
@@ -11,6 +12,10 @@ with open('README.md') as readme_file:
 
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
+
+def get_version():
+    with open(f"{NAME}/__init__.py") as f:
+        return re.search(r'\d+\.\d+\.\d+', f.read()).group()
 
 
 def get_requirements(stage=None):
@@ -62,6 +67,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/ZhengRyan/autotreemodel',
-    version='0.1.4',
+    version=get_version(),
     zip_safe=False,
 )
