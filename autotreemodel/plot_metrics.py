@@ -196,7 +196,7 @@ def calc_plot_metrics(df: pd.DataFrame, to_bin_col='p', target='target', curve_s
     data.update({'all': df})
 
     for data_type, type_df in data.items():
-        res_save_path = curve_save_path + '/{}/'.format(data_type)
+        res_save_path = os.path.join(curve_save_path, data_type)
         os.makedirs(res_save_path, exist_ok=True)
 
         res_dict = {}
@@ -207,17 +207,17 @@ def calc_plot_metrics(df: pd.DataFrame, to_bin_col='p', target='target', curve_s
         res_dict.update(plot_pr_f1(type_df[target], type_df[to_bin_col], res_save_path, data_type))
 
         ###相关指标保存json格式
-        save_json(res_dict, res_save_path + '{}_res_json.json'.format(data_type))
+        save_json(res_dict, os.path.join(res_save_path, '{}_res_json.json'.format(data_type)))
 
 
 if __name__ == "__main__":
     ######读取数据
-    data_path = '/Users/ryanzheng/td/项目/RTA/还呗RTA/还呗建模环境账号信息/还呗建模环境/202208_事项/模型/TD47p25combine/TD47p25combine_td_to_report_data.csv'
+    data_path = 'TD47p25combine_td_to_report_data.csv'
     df = pd.read_csv(data_path)
     df = df[df['label'].notnull()]
 
     print(len(df))
 
     ######结果保存路径
-    curve_save_path = '/Users/ryanzheng/PycharmProjects/auto_build_tree_model/examples/curve_result'
+    curve_save_path = 'curve_result'
     calc_plot_metrics(df=df, to_bin_col='td', target='label', curve_save_path=curve_save_path)
