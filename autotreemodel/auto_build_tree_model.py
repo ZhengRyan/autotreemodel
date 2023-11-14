@@ -58,7 +58,6 @@ class AutoBuildTreeModel():
         self.target = target
         self.key = key
         self.no_feature_names = no_feature_names
-        self.ml_res_save_path = ml_res_save_path + '/' + time.strftime('%Y%m%d%H%M%S_%S', time.localtime())
         self.ml_res_save_path = os.path.join(ml_res_save_path, time.strftime('%Y%m%d%H%M%S_%S', time.localtime()))
         self.to_score_a_b = to_score_a_b
         self.min_child_samples = max(round(len(datasets[datasets['type'] == 'train']) * 0.02),
@@ -177,18 +176,19 @@ class AutoBuildTreeModel():
 
         ##############
         log.info('*' * 30 + '建模相关结果开始保存！！！' + '*' * 30)
-        joblib.dump(xgb_clf.get_booster(), '{}/xgb.ml'.format(self.ml_res_save_path))
-        joblib.dump(xgb_clf, '{}/xgb_sk.ml'.format(self.ml_res_save_path))
-        json.dump(xgb_clf.get_params(), open('{}/xgb.params'.format(self.ml_res_save_path), 'w'))
-        xgb_clf.get_booster().dump_model('{}/xgb.txt'.format(self.ml_res_save_path))
-        pd.DataFrame([res_dict]).to_csv('{}/xgb_auc_ks_psi.csv'.format(self.ml_res_save_path), index=False)
+        joblib.dump(xgb_clf.get_booster(), os.path.join(self.ml_res_save_path, 'xgb.ml'))
+        joblib.dump(xgb_clf, os.path.join(self.ml_res_save_path, 'xgb_sk.ml'))
+        json.dump(xgb_clf.get_params(), open(os.path.join(self.ml_res_save_path, 'xgb.params'), 'w'))
+        xgb_clf.get_booster().dump_model(os.path.join(self.ml_res_save_path, 'xgb.txt'))
+        pd.DataFrame([res_dict]).to_csv(os.path.join(self.ml_res_save_path, 'xgb_auc_ks_psi.csv'), index=False)
+
 
         pd.DataFrame(list(xgb_clf.get_booster().get_fscore().items()),
                      columns=['fea_names', 'weight']
                      ).sort_values('weight', ascending=False).set_index('fea_names').to_csv(
-            '{}/xgb_featureimportance.csv'.format(self.ml_res_save_path))
+            os.path.join(self.ml_res_save_path, 'xgb_featureimportance.csv'))
 
-        nodev_data[self.no_feature_names + fea_names].head(500).to_csv('{}/xgb_input.csv'.format(self.ml_res_save_path),
+        nodev_data[self.no_feature_names + fea_names].head(500).to_csv(os.path.join(self.ml_res_save_path, 'xgb_input.csv'),
                                                                        index=False)
 
         ##############pred to score
@@ -198,7 +198,8 @@ class AutoBuildTreeModel():
             lambda x: to_score(x, self.to_score_a_b['A'], self.to_score_a_b['B']))
         ##############pred to score
 
-        df_pred_nodev.append(df_pred_dev).to_csv('{}/xgb_pred_to_report_data.csv'.format(self.ml_res_save_path),
+
+        df_pred_nodev.append(df_pred_dev).to_csv(os.path.join(self.ml_res_save_path, 'xgb_pred_to_report_data.csv'),
                                                  index=False)
 
         log.info('*' * 30 + '建模相关结果保存完成！！！保存路径为：{}'.format(self.ml_res_save_path) + '*' * 30)
